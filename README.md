@@ -4,10 +4,17 @@
 
 Takes a 2D polyline and a line thickness, then produces a triangulated and indexed mesh. 
 
+WIP
+
 
 ```js
 [ [25, 25], [15, 60] ]
 
+//returns
+{
+    positions: [ [x, y], [x, y] ],
+    cells: [ [a,b,c], [a,b,c] ]
+}
 ```
 
 FEATURES:
@@ -24,7 +31,7 @@ TODO:
 - ensure winding order does not lead to culling
 - connecting start + end points without a cap
 - optimizations for flat Float32Array ? 
-- how to handle anti-aliasing? surround mesh?
+- how to handle anti-aliasing? vertex attribs? or surround mesh?
 
 
 ## Usage
