@@ -1,0 +1,52 @@
+{
+  "name": "meshify-sroke",
+  "version": "1.0.0",
+  "description": "triangulates a 2D polyline into a stroke",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "author": {
+    "name": "Matt DesLauriers",
+    "email": "dave.des@gmail.com",
+    "url": "https://github.com/mattdesl"
+  },
+  "dependencies": {
+    "gl-vec2": "^1.0.0"
+  },
+  "devDependencies": {
+    "array-range": "^1.0.1",
+    "canvas-testbed": "^1.0.3",
+    "color-convert": "^0.5.2",
+    "color-style": "^1.0.0",
+    "randf": "^1.0.0",
+    "tape": "^3.0.3"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "triangulate",
+    "line",
+    "rendering",
+    "lines",
+    "2d",
+    "poly",
+    "line",
+    "polyline",
+    "path",
+    "outline",
+    "stroke",
+    "gl",
+    "webgl",
+    "glsl",
+    "stackgl"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mattdesl/meshify-sroke.git"
+  },
+  "homepage": "https://github.com/mattdesl/meshify-sroke",
+  "bugs": {
+    "url": "https://github.com/mattdesl/meshify-sroke/issues"
+  }
+}
