@@ -4,9 +4,9 @@ require('canvas-testbed')(render, { once: true })
 
 var path = [
     [35, 25],
-    [105, 45],
-    [75, 130],
-    [175, 130],
+    [105, 45]
+    // [75, 130],
+    // [175, 130],
     // [110, 5]
 ]
 
@@ -38,31 +38,31 @@ function render(ctx, width, height) {
     })
     ctx.stroke()
 
-    // ctx.translate(100, 0)
+    ctx.translate(100, 0)
 
     stroke.clear().path(path)
     
-    // stroke.cells.forEach(function(f, i) {
-    //     ctx.beginPath()
+    stroke.cells.forEach(function(f, i) {
+        ctx.beginPath()
 
-    //     var v = stroke.positions
-    //     var v0 = v[f[0]],
-    //         v1 = v[f[1]],
-    //         v2 = v[f[2]]
-    //     ctx.moveTo(v0[0], v0[1])
-    //     ctx.lineTo(v1[0], v1[1])
-    //     ctx.lineTo(v2[0], v2[1])
-    //     ctx.lineTo(v0[0], v0[1])
+        var v = stroke.positions
+        var v0 = v[f[0]],
+            v1 = v[f[1]],
+            v2 = v[f[2]]
+        ctx.moveTo(v0[0], v0[1])
+        ctx.lineTo(v1[0], v1[1])
+        ctx.lineTo(v2[0], v2[1])
+        ctx.lineTo(v0[0], v0[1])
 
-    //     ctx.fillStyle = colorStyle(colors[i%colors.length])
-    //     ctx.fill()
-    // })
+        ctx.fillStyle = colorStyle(colors[i%colors.length])
+        ctx.fill()
+    })
 
     
 
     stroke.positions.forEach(function(p) {
         ctx.fillStyle = 'red'
-        ctx.fillRect(p[0], p[1], 4, 4)
+        ctx.fillRect(p[0]-2, p[1]-2, 4, 4)
     })
     
     ctx.restore()
