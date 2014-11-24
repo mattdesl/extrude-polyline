@@ -40,11 +40,9 @@ Stroke.prototype.clear = function() {
     return this
 }
 
-Stroke.prototype._join = function(index, cur, last, next, halfThick) {
+Stroke.prototype._join2 = function(index, cur, last, next, halfThick) {
     var cells = this.cells
     var positions = this.positions
-
-
 
     //get unit dir of two lines
     vec.subtract(lineA, next, cur)
@@ -60,10 +58,13 @@ Stroke.prototype._join = function(index, cur, last, next, halfThick) {
     //get perpendicular A
     vec.set(perp, -lineB[1], lineB[0])
 
+    var flip = 1//(vec.dot(tangent, perp) < 0) ? -1 : 1
+
     //get miter as a unit vector
     vec.set(miter, -tangent[1], tangent[0])
     //get the necessary length of our miter
     var len = halfThick / vec.dot(miter, perp)
+    
     var bevel = joinType === BEVEL
     if (!bevel && joinType === MITER) {
         // if (len / (halfThick*2) > miterLimit) {
@@ -81,9 +82,7 @@ Stroke.prototype._join = function(index, cur, last, next, halfThick) {
     //now do the regular segmenting
     
     //scale perp based on thickness
-    vec.scale(perp, perp, halfThick)
-    
-    var flip = vec.dot(tangent, perp) < 0
+    vec.scale(perp, perp, halfThick * flip)
 
     //first two points in our segment as well as the correct cells
     this._segmentStart(index, lineB, perp, last, halfThick)
@@ -93,17 +92,15 @@ Stroke.prototype._join = function(index, cur, last, next, halfThick) {
         vec.scaleAndAdd(capEnd, next, lineA, halfThick)
         next = capEnd
     }
+    console.log(flip)
 
-    // bevel = true
+    bevel = false
     if (bevel) {
         //next two points in our first segment
         vec.scaleAndAdd(tmp, cur, perp, -1)
         positions.push(vec.clone(tmp))
-
-        vec.scaleAndAdd(tmp, cur, miter, len)
+        vec.scaleAndAdd(tmp, cur, miter, len * flip)
         positions.push(vec.clone(tmp))
-
-        console.log(flip)
 
         cells.push([index+2, index+1, index+3])
 
@@ -112,18 +109,18 @@ Stroke.prototype._join = function(index, cur, last, next, halfThick) {
 
         //get second normal
         vec.set(perp, -lineA[1], lineA[0])
-        vec.scale(perp, perp, halfThick)
+        vec.scale(perp, perp, halfThick * flip)
 
         //next point in our bevel
         vec.scaleAndAdd(tmp, cur, perp, -1)
         positions.push(vec.clone(tmp))
 
         //next two points in our second segment
-        vec.subtract(tmp, next, perp)
+        vec.scaleAndAdd(tmp, next, perp, -1)
         positions.push(vec.clone(tmp))
         cells.push([index+4, index+3, index+5])
 
-        vec.add(tmp, next, perp)
+        vec.scaleAndAdd(tmp, next, perp, 1)
         positions.push(vec.clone(tmp))
         cells.push([index+5, index+3, index+6])
     } else {
@@ -139,7 +136,6 @@ Stroke.prototype._join = function(index, cur, last, next, halfThick) {
         vec.set(perp, -lineA[1], lineA[0])
         vec.scale(perp, perp, halfThick)
 
-
         //next two points in our second segment
         vec.subtract(tmp, next, perp)
         positions.push(vec.clone(tmp))
@@ -148,9 +144,7 @@ Stroke.prototype._join = function(index, cur, last, next, halfThick) {
         vec.add(tmp, next, perp)
         positions.push(vec.clone(tmp))
         cells.push([index+4, index+3, index+5])
-    }
-
-        
+    }   
 }
 
 Stroke.prototype._segmentStart = function(index, normal, perp, last, halfThick) {
@@ -209,6 +203,84 @@ Stroke.prototype._segment = function(index, cur, last, halfThick) {
     cells.push([index+2, index+1, index+3])
 }
 
+
+Stroke.prototype._join2 = function(index, cur, last, next, halfThick) {
+    var cells = this.cells
+    var positions = this.positions
+
+    //get unit dir of two lines
+    vec.subtract(lineA, next, cur)
+    vec.normalize(lineA, lineA)
+
+    vec.subtract(lineB, cur, last)
+    vec.normalize(lineB, lineB)
+    
+    //get tangent line
+    vec.add(tangent, lineA, lineB)
+    vec.normalize(tangent, tangent)
+
+    //get perpendicular A
+    vec.set(perp, -lineB[1], lineB[0])
+
+    var flip = 1//(vec.dot(tangent, perp) < 0) ? -1 : 1
+
+    //get miter as a unit vector
+    vec.set(miter, -tangent[1], tangent[0])
+    //get the necessary length of our miter
+    var len = halfThick / vec.dot(miter, perp)
+    
+    var bevel = joinType === BEVEL
+    if (!bevel && joinType === MITER) {
+        // if (len / (halfThick*2) > miterLimit) {
+            // bevel = true
+        // }
+
+        // var angle = Math.atan2(next[1]-last[1], next[0]-last[0])
+        // var limit = 1/Math.sin(angle/2)
+        var limit = len / (halfThick)
+        console.log(limit, this.miterLimit)
+        if (limit > this.miterLimit)
+            bevel = true
+    }
+
+    //now do the regular segmenting
+    
+    //scale perp based on thickness
+    vec.scale(perp, perp, halfThick * flip)
+
+    //first two points in our segment as well as the correct cells
+    this._segmentStart(index, lineB, perp, last, halfThick)
+
+    //if the end cap is type square, we can just push the verts out a bit
+    if (capType === SQUARE) {
+        vec.scaleAndAdd(capEnd, next, lineA, halfThick)
+        next = capEnd
+    }
+    console.log(flip)
+
+
+    //next two points in our first segment
+    vec.scaleAndAdd(tmp, cur, miter, -len)
+    positions.push(vec.clone(tmp))
+
+    vec.scaleAndAdd(tmp, cur, miter, len)
+    positions.push(vec.clone(tmp))
+    cells.push([index+2, index+1, index+3])
+
+    //get second normal
+    vec.set(perp, -lineA[1], lineA[0])
+    vec.scale(perp, perp, halfThick)
+
+    //next two points in our second segment
+    vec.subtract(tmp, next, perp)
+    positions.push(vec.clone(tmp))
+    cells.push([index+2, index+3, index+4])
+
+    vec.add(tmp, next, perp)
+    positions.push(vec.clone(tmp))
+    cells.push([index+4, index+3, index+5])
+}
+
 Stroke.prototype.path = function(points) {
     if (points.length <= 1)
         return
@@ -228,13 +300,10 @@ Stroke.prototype.path = function(points) {
             var cur = points[i]
             var next = points[i+1]
 
-            this._join(count, cur, last, next, halfThick)
+            this._join2(count, cur, last, next, halfThick)
             count+=6
         }
     }
-
-        
-
     //add end cap
 }
 

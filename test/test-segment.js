@@ -5,8 +5,9 @@ require('canvas-testbed')(render, { once: true })
 var path = [
     [35, 25],
     [105, 45],
-    // [75, 130],
-    [150, 15]
+    [75, 130],
+    [175, 130],
+    // [110, 5]
 ]
 
 var draw = require('./draw-complex')
@@ -27,9 +28,9 @@ var colors = array(50).map(function() {
 
 function render(ctx, width, height) {
     ctx.save()  
-    ctx.miterLimit = stroke.miterLimit = 1
+    ctx.miterLimit = stroke.miterLimit = 10
     ctx.lineWidth = 20
-    ctx.lineJoin = 'miter'
+    ctx.lineJoin = 'bevel'
     ctx.lineCap = 'square'
     ctx.beginPath()
     path.forEach(function(p) {
@@ -37,29 +38,32 @@ function render(ctx, width, height) {
     })
     ctx.stroke()
 
-    ctx.translate(100, 0)
+    // ctx.translate(100, 0)
 
     stroke.clear().path(path)
     
-    stroke.cells.forEach(function(f, i) {
-        ctx.beginPath()
+    // stroke.cells.forEach(function(f, i) {
+    //     ctx.beginPath()
 
-        var v = stroke.positions
-        var v0 = v[f[0]],
-            v1 = v[f[1]],
-            v2 = v[f[2]]
-        ctx.moveTo(v0[0], v0[1])
-        ctx.lineTo(v1[0], v1[1])
-        ctx.lineTo(v2[0], v2[1])
-        ctx.lineTo(v0[0], v0[1])
+    //     var v = stroke.positions
+    //     var v0 = v[f[0]],
+    //         v1 = v[f[1]],
+    //         v2 = v[f[2]]
+    //     ctx.moveTo(v0[0], v0[1])
+    //     ctx.lineTo(v1[0], v1[1])
+    //     ctx.lineTo(v2[0], v2[1])
+    //     ctx.lineTo(v0[0], v0[1])
 
-        ctx.fillStyle = colorStyle(colors[i%colors.length])
-        ctx.fill()
-    })
-
-    // stroke.positions.forEach(function(p) {
-    //     ctx.fillRect(p[0], p[1], 4, 4)
+    //     ctx.fillStyle = colorStyle(colors[i%colors.length])
+    //     ctx.fill()
     // })
+
+    
+
+    stroke.positions.forEach(function(p) {
+        ctx.fillStyle = 'red'
+        ctx.fillRect(p[0], p[1], 4, 4)
+    })
     
     ctx.restore()
 }
