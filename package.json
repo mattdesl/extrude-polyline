@@ -16,15 +16,18 @@
   },
   "devDependencies": {
     "array-range": "^1.0.1",
+    "beefy": "^2.1.1",
     "canvas-testbed": "^1.0.3",
+    "clamp": "^1.0.1",
     "color-convert": "^0.5.2",
     "color-style": "^1.0.0",
     "randf": "^1.0.0",
+    "smoothstep": "^1.0.1",
     "tape": "^3.0.3",
     "touch-position": "^1.0.3"
   },
   "scripts": {
-    "test": "node test.js"
+    "test": "beefy test/test-segment.js --open"
   },
   "keywords": [
     "triangulate",

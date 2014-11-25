@@ -2,6 +2,8 @@
 
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
 
+![img](http://i.imgur.com/LGKsTj2.png)
+
 Extrudes a 2D polyline with a given line thickness and the desired join/cap types. Tries to maintain visual consistency with HTML5 2D context stroking.
 
 ```js
@@ -9,7 +11,7 @@ var polylne = [ [25, 25], [15, 60] ]
 var stroke = require('extrude-polyline')({ 
     thickness: 20, 
     cap: 'square',
-    join: 'miter',
+    join: 'bevel',
     miterLimit: 10
 })
 
@@ -26,11 +28,33 @@ The returned mesh is a simplicial complex.
 }
 ```
 
+## variable thickness
 
+Currently, to achieve variable thickness you can provide a `mapThickness` function to the stroke instance before building. By default, it will simply return the current thickness.
+
+```js
+//create a falloff, so the thickness tapers toward the start of the path
+stroke.mapThickness = function(point, index, points) {
+    return this.thickness * index/(points.length-1)
+}.bind(stroke)
+```
 
 ## Usage
 
 [![NPM](https://nodei.co/npm/extrude-polyline.png)](https://nodei.co/npm/extrude-polyline/)
+
+#### `stroke = Extrusion([opt])`
+
+Creates a new path builder with the given settings:
+
+- `thickness` the line thickness
+- `miterLimit` the limit before miters turn into bevels; default 10
+- `join` the join type, can be `'miter'` or `'bevel'` - default 'miter'
+- `cap` the cap type, can be `'butt'` or `'square'` - defalut 'butt'
+
+#### `stroke.build(points)`
+
+Builds a stroke with the specified list of 2D points.
 
 ## Roadmap
 
@@ -44,7 +68,6 @@ Some features that could be useful to add at a later point. PRs welcome.
 - optimizations for GC (pooling, etc)
 - handling anti-aliasing
 - degenerate triangles or some other form of supporting disconnected lines
-
 
 ## License
 

@@ -11,11 +11,11 @@ var miter = vec.create()
 function Stroke(opt) {
     if (!(this instanceof Stroke))
         return new Stroke(opt)
+    opt = opt||{}
     this.miterLimit = number(opt.miterLimit, 10)
     this.thickness = number(opt.thickness, 1)
     this.join = opt.join || 'miter'
     this.cap = opt.cap || 'butt'
-
     this._normal = null
     this._lastFlip = -1
     this._started = false
@@ -31,17 +31,12 @@ Stroke.prototype.build = function(points) {
         cells: []
     }
 
-    //clear flags
-    this.index = 0
-    this._lastFlip = -1
-    this._started = false
-    this._normal = null
-
     if (points.length <= 1)
         return complex
 
     var total = points.length
 
+    //clear flags
     this._lastFlip = -1
     this._started = false
     this._normal = null
@@ -93,7 +88,7 @@ Stroke.prototype._seg = function(complex, index, last, cur, next, halfThick) {
     /*
     // now determine the type of join with next segment
 
-    - round TODO
+    - round (TODO)
     - bevel 
     - miter
     - none (i.e. no next segment, use normal)
