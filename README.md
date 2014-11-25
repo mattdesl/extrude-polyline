@@ -56,9 +56,9 @@ Creates a new path builder with the given settings:
 - `join` the join type, can be `'miter'` or `'bevel'` - default 'miter'
 - `cap` the cap type, can be `'butt'` or `'square'` - defalut 'butt'
 
-#### `stroke.build(points)`
+#### `mesh = stroke.build(points)`
 
-Builds a stroke with the specified list of 2D points.
+Builds a stroke with the specified list of 2D points. Returns a simplicial complex.
 
 ## Roadmap
 
