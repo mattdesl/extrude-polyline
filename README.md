@@ -1,4 +1,4 @@
-# meshify-stroke
+# extrude-stroke
 
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
 
@@ -36,8 +36,8 @@ TODO:
 
 ## Usage
 
-[![NPM](https://nodei.co/npm/meshify-stroke.png)](https://nodei.co/npm/meshify-stroke/)
+[![NPM](https://nodei.co/npm/extrude-stroke.png)](https://nodei.co/npm/extrude-stroke/)
 
 ## License
 
-MIT, see [LICENSE.md](http://github.com/mattdesl/meshify-stroke/blob/master/LICENSE.md) for details.
+MIT, see [LICENSE.md](http://github.com/mattdesl/extrude-stroke/blob/master/LICENSE.md) for details.

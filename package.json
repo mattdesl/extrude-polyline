@@ -1,5 +1,5 @@
 {
-  "name": "meshify-sroke",
+  "name": "extrude-stroke",
   "version": "1.0.0",
   "description": "triangulates a 2D polyline into a stroke",
   "main": "index.js",
@@ -44,10 +44,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/mattdesl/meshify-sroke.git"
+    "url": "git://github.com/mattdesl/extrude-stroke.git"
   },
-  "homepage": "https://github.com/mattdesl/meshify-sroke",
+  "homepage": "https://github.com/mattdesl/extrude-stroke",
   "bugs": {
-    "url": "https://github.com/mattdesl/meshify-sroke/issues"
+    "url": "https://github.com/mattdesl/extrude-stroke/issues"
   }
 }

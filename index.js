@@ -42,10 +42,9 @@ Stroke.prototype.clear = function() {
     return this
 }
 
-Stroke.prototype._seg = function(index, last, cur, next) {
+Stroke.prototype._seg = function(index, last, cur, next, halfThick) {
     var cells = this.cells
     var positions = this.positions
-    var halfThick = this.thickness/2
     var count = 0
 
     var capSquare = this.capType === 'square'
@@ -114,8 +113,6 @@ Stroke.prototype._seg = function(index, last, cur, next) {
 
         var bevel = joinBevel
         if (!bevel && this.joinType === 'miter') {
-            // var angle = Math.atan2(next[1]-last[1], next[0]-last[0])
-            // var limit = 1/Math.sin(angle/2)
             var limit = miterLen / (halfThick)
             if (limit > this.miterLimit)
                 bevel = true
@@ -132,7 +129,6 @@ Stroke.prototype._seg = function(index, last, cur, next) {
             cells.push(this._lastFlip!==-flip
                     ? [index, index+2, index+3] 
                     : [index+2, index+1, index+3])
-            
 
             //now add the bevel triangle
             cells.push([index+2, index+3, index+4])
@@ -196,13 +192,16 @@ function direction(out, a, b) {
     return out
 }
 
+Stroke.prototype.mapThickness = function(point, i, points) {
+    return this.thickness
+}
+
 Stroke.prototype.path = function(points) {
     if (points.length <= 1)
         return
 
     var cells = this.cells
     var positions = this.positions
-    var halfThick = this.thickness / 2
     var total = points.length
 
     this._lastFlip = -1
@@ -214,23 +213,10 @@ Stroke.prototype.path = function(points) {
         var last = points[i-1]
         var cur = points[i]
         var next = i<points.length-1 ? points[i+1] : null
-
-        var amt = this._seg(count, last, cur, next)
+        var thickness = this.mapThickness(cur, i, points)
+        var amt = this._seg(count, last, cur, next, thickness/2)
         count += amt
     }
-
-    //add end cap
 }
-
-// module.exports.flat = function strokeFlat(path, data, stride, offset, count) {
-//     offset = offset||0
-//     stride = stride||2
-//     //single point.. no line
-//     if (path.length < 2) {
-//         if (path.length === 1)
-//             copy(data, offset, path[0])
-//         return
-//     }
-// }
 
 module.exports = Stroke

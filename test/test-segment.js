@@ -1,5 +1,9 @@
 var stroke = require('../')()
 
+stroke.mapThickness = function(point, index, points) {
+    return index/(points.length-1) * 10
+}
+
 require('canvas-testbed')(render, { once: false })
 var vec = require('gl-vec2')
 vec.create = function() { //for debugging
@@ -40,7 +44,7 @@ var colors = array(50).map(function() {
 })
 
 touch.on('move', function(x, y) {
-    if (vec.distance(touch.position, path[path.length-1]) > 100)
+    if (vec.distance(touch.position, path[path.length-1]) > 6)
         path.push(touch.position.slice())
 })
 
@@ -60,7 +64,7 @@ function render(ctx, width, height, dt) {
     path.forEach(function(p) {
         ctx.lineTo(p[0], p[1])
     })
-    ctx.stroke()
+    // ctx.stroke()
 
     ctx.translate(0, 0)
 
@@ -79,7 +83,7 @@ function render(ctx, width, height, dt) {
         ctx.lineTo(v2[0], v2[1])
         ctx.lineTo(v0[0], v0[1])
 
-        ctx.fillStyle = colorStyle(colors[i%colors.length])
+        ctx.fillStyle = '#1d1d1d'//colorStyle(colors[i%colors.length])
         ctx.fill()
 
         // ctx.fillStyle = 'black'
