@@ -1,5 +1,5 @@
 var number = require('as-number')
-var vec = require('gl-vec2')
+var vec = require('./vecutil')
 
 var tmp = vec.create()
 var capEnd = vec.create()

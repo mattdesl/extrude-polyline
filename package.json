@@ -26,7 +26,8 @@
     "touch-position": "^1.0.3"
   },
   "scripts": {
-    "test": "beefy test/test-draw.js --open"
+    "test": "beefy test/test-draw.js --open",
+    "test-basic": "node test/test"
   },
   "keywords": [
     "triangulate",
