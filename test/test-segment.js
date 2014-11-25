@@ -1,18 +1,31 @@
 var stroke = require('../')()
 
-require('canvas-testbed')(render, { once: true })
+require('canvas-testbed')(render, { once: false })
+var vec = require('gl-vec2')
+vec.create = function() { //for debugging
+    return [0,0]
+}
+vec.clone = function(other) {
+    return [other[0], other[1]]
+}
 
 var path = [
-    [35, 25],
-    [105, 45]
-    // [75, 130],
-    // [175, 130],
-    // [110, 5]
+    [35, 75],
+    [55, 55],
+    [75, 80],
+    [175, 130],
+    // [215, 50],
+    // [15, 130],
+    // [110, 10],
+    // [200, 100],
+    // [200, 20],
 ]
 
 var draw = require('./draw-complex')
 
 var data = new Float32Array(100 * 2)
+
+var touch = require('touch-position').emitter()
 
 var array = require('array-range')
 var hsv2rgb = require('color-convert').hsv2rgb
@@ -26,20 +39,32 @@ var colors = array(50).map(function() {
     return hsv2rgb([h, s, v])
 })
 
-function render(ctx, width, height) {
+touch.on('move', function(x, y) {
+    if (vec.distance(touch.position, path[path.length-1]) > 100)
+        path.push(touch.position.slice())
+})
+
+var time = 0
+
+function render(ctx, width, height, dt) {
+    time+=dt
+
+    ctx.clearRect(0,0,width,height)
     ctx.save()  
-    ctx.miterLimit = stroke.miterLimit = 10
+    ctx.miterLimit = stroke.miterLimit = 3
+
     ctx.lineWidth = 20
-    ctx.lineJoin = 'bevel'
-    ctx.lineCap = 'square'
+    ctx.lineJoin = stroke.joinType = 'miter'
+    ctx.lineCap = stroke.capType = 'butt'
     ctx.beginPath()
     path.forEach(function(p) {
         ctx.lineTo(p[0], p[1])
     })
     ctx.stroke()
 
-    ctx.translate(100, 0)
+    ctx.translate(0, 0)
 
+    stroke.thickness = 10 + Math.sin(time/1000 * 2)*10
     stroke.clear().path(path)
     
     stroke.cells.forEach(function(f, i) {
@@ -56,13 +81,18 @@ function render(ctx, width, height) {
 
         ctx.fillStyle = colorStyle(colors[i%colors.length])
         ctx.fill()
-    })
 
-    
+        // ctx.fillStyle = 'black'
+        // ctx.fillText(f[0], v0[0], v0[1])
+        // ctx.fillText(f[1], v1[0], v1[1])
+        // ctx.fillText(f[2], v2[0], v2[1])
+    })
 
     stroke.positions.forEach(function(p) {
         ctx.fillStyle = 'red'
-        ctx.fillRect(p[0]-2, p[1]-2, 4, 4)
+        var s = p[2] || 4
+        // ctx.fillRect(p[0]-s/2, p[1]-s/2, s, s)
+        
     })
     
     ctx.restore()

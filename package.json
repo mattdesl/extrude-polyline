@@ -19,7 +19,8 @@
     "color-convert": "^0.5.2",
     "color-style": "^1.0.0",
     "randf": "^1.0.0",
-    "tape": "^3.0.3"
+    "tape": "^3.0.3",
+    "touch-position": "^1.0.3"
   },
   "scripts": {
     "test": "node test.js"
