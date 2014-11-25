@@ -2,7 +2,6 @@ var number = require('as-number')
 var array = require('array-range')
 var hsv2rgb = require('color-convert').hsv2rgb
 var random = require('randf')
-var colorStyle = require('color-style')
 
 module.exports = function(n) {
     n = number(n, 50)
