@@ -1,43 +1,51 @@
-# extrude-stroke
+# extrude-polyline
 
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
 
-Takes a 2D polyline and a line thickness, then produces a triangulated and indexed mesh. 
-
-WIP
-
+Extrudes a 2D polyline with a given line thickness and the desired join/cap types. Tries to maintain visual consistency with HTML5 2D context stroking.
 
 ```js
-[ [25, 25], [15, 60] ]
+var polylne = [ [25, 25], [15, 60] ]
+var stroke = require('extrude-polyline')({ 
+    thickness: 20, 
+    cap: 'square',
+    join: 'miter',
+    miterLimit: 10
+})
 
-//returns
+//builds a triangulated mesh from a polyline
+var mesh = stroke.build(polyline)
+```
+
+The returned mesh is a simplicial complex.
+
+```js
 {
-    positions: [ [x, y], [x, y] ],
+    positions: [ [x,y], [x,y] ],
     cells: [ [a,b,c], [a,b,c] ]
 }
 ```
 
-FEATURES:
-
-- miter join
-- bevel join
-- square/butt end caps
-
-TODO:
-
-- round corners
-- round end caps
-- fix case where normal is reversed
-- ensure winding order does not lead to culling
-- connecting start + end points without a cap
-- optimizations for flat Float32Array ? 
-- how to handle anti-aliasing? vertex attribs? or surround mesh?
 
 
 ## Usage
 
-[![NPM](https://nodei.co/npm/extrude-stroke.png)](https://nodei.co/npm/extrude-stroke/)
+[![NPM](https://nodei.co/npm/extrude-polyline.png)](https://nodei.co/npm/extrude-polyline/)
+
+## Roadmap
+
+Some features that could be useful to add at a later point. PRs welcome.
+
+- round corners
+- round end caps
+- use consistent winding order so we don't need to disable gl.CULLING
+- connecting start and end points 
+- optimizations for flat arrays (Float32Array) ? 
+- optimizations for GC (pooling, etc)
+- handling anti-aliasing
+- degenerate triangles or some other form of supporting disconnected lines
+
 
 ## License
 
-MIT, see [LICENSE.md](http://github.com/mattdesl/extrude-stroke/blob/master/LICENSE.md) for details.
+MIT, see [LICENSE.md](http://github.com/mattdesl/extrude-polyline/blob/master/LICENSE.md) for details.

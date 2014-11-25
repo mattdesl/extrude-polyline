@@ -1,54 +1,69 @@
+var number = require('as-number')
 var vec = require('gl-vec2')
 
-
 var tmp = vec.create()
-var perp = vec.create()
-var capStart = vec.create()
 var capEnd = vec.create()
-
 var lineA = vec.create()
 var lineB = vec.create()
 var tangent = vec.create()
 var miter = vec.create()
 
-function copy(array, offset, vec) {
-    array[offset] = vec[0]
-    array[offset+1] = vec[1]
-}
-
-
-function Stroke(path) {
+function Stroke(opt) {
     if (!(this instanceof Stroke))
-        return new Stroke(path)
-    this.cells = []
-    this.positions = []
-    this.miterLimit = 10
-    this.thickness = 1
-    this.joinType = 'miter'
-    this.capType = 'butt'
+        return new Stroke(opt)
+    this.miterLimit = number(opt.miterLimit, 10)
+    this.thickness = number(opt.thickness, 1)
+    this.join = opt.join || 'miter'
+    this.cap = opt.cap || 'butt'
 
     this._normal = null
     this._lastFlip = -1
     this._started = false
 }
 
-Stroke.prototype.clear = function() {
+Stroke.prototype.mapThickness = function(point, i, points) {
+    return this.thickness
+}
+
+Stroke.prototype.build = function(points) {
+    var complex = {
+        positions: [],
+        cells: []
+    }
+
+    //clear flags
     this.index = 0
-    this.positions.length = 0
-    this.cells.length = 0
     this._lastFlip = -1
     this._started = false
     this._normal = null
-    return this
+
+    if (points.length <= 1)
+        return complex
+
+    var total = points.length
+
+    this._lastFlip = -1
+    this._started = false
+    this._normal = null
+
+    //join each segment
+    for (var i=1, count=0; i<total; i++) {
+        var last = points[i-1]
+        var cur = points[i]
+        var next = i<points.length-1 ? points[i+1] : null
+        var thickness = this.mapThickness(cur, i, points)
+        var amt = this._seg(complex, count, last, cur, next, thickness/2)
+        count += amt
+    }
+    return complex
 }
 
-Stroke.prototype._seg = function(index, last, cur, next, halfThick) {
-    var cells = this.cells
-    var positions = this.positions
+Stroke.prototype._seg = function(complex, index, last, cur, next, halfThick) {
     var count = 0
-
-    var capSquare = this.capType === 'square'
-    var joinBevel = this.joinType === 'bevel'
+    var cells = complex.cells
+    var positions = complex.positions
+    var capSquare = this.cap === 'square'
+    var joinBevel = this.join === 'bevel'
 
     //get unit direction of line
     direction(lineA, cur, last)
@@ -78,14 +93,13 @@ Stroke.prototype._seg = function(index, last, cur, next, halfThick) {
     /*
     // now determine the type of join with next segment
 
-    - round
-    - bevel
+    - round TODO
+    - bevel 
     - miter
     - none (i.e. no next segment, use normal)
      */
-
-     
-     if (!next) { //no next segment, simple extrusion
+    
+    if (!next) { //no next segment, simple extrusion
         //now reset normal to finish cap
         normal(this._normal, lineA)
 
@@ -112,7 +126,7 @@ Stroke.prototype._seg = function(index, last, cur, next, halfThick) {
         var flip = (vec.dot(tangent, this._normal) < 0) ? -1 : 1
 
         var bevel = joinBevel
-        if (!bevel && this.joinType === 'miter') {
+        if (!bevel && this.join === 'miter') {
             var limit = miterLen / (halfThick)
             if (limit > this.miterLimit)
                 bevel = true
@@ -144,7 +158,10 @@ Stroke.prototype._seg = function(index, last, cur, next, halfThick) {
         } else { //miter
             //next two points for our miter join
             extrusions(positions, cur, miter, miterLen)
-            cells.push([index+2, index+1, index+3])
+            cells.push(this._lastFlip===1
+                    ? [index, index+2, index+3] 
+                    : [index+2, index+1, index+3])
+
             flip = -1
 
             //the miter is now the normal for our next join
@@ -155,7 +172,6 @@ Stroke.prototype._seg = function(index, last, cur, next, halfThick) {
      }
      return count
 }
-
 
 function computeMiter(tangent, miter, lineA, lineB, halfThick) {
     //get tangent line
@@ -190,33 +206,6 @@ function direction(out, a, b) {
     vec.subtract(out, a, b)
     vec.normalize(out, out)
     return out
-}
-
-Stroke.prototype.mapThickness = function(point, i, points) {
-    return this.thickness
-}
-
-Stroke.prototype.path = function(points) {
-    if (points.length <= 1)
-        return
-
-    var cells = this.cells
-    var positions = this.positions
-    var total = points.length
-
-    this._lastFlip = -1
-    this._started = false
-    this._normal = null
-
-    //join each segment
-    for (var i=1, count=0; i<total; i++) {
-        var last = points[i-1]
-        var cur = points[i]
-        var next = i<points.length-1 ? points[i+1] : null
-        var thickness = this.mapThickness(cur, i, points)
-        var amt = this._seg(count, last, cur, next, thickness/2)
-        count += amt
-    }
 }
 
 module.exports = Stroke

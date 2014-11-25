@@ -1,8 +1,8 @@
 var stroke = require('../')()
 
-stroke.mapThickness = function(point, index, points) {
-    return index/(points.length-1) * 10
-}
+// stroke.mapThickness = function(point, index, points) {
+//     return index/(points.length-1) * 10
+// }
 
 require('canvas-testbed')(render, { once: false })
 var vec = require('gl-vec2')
@@ -13,16 +13,21 @@ vec.clone = function(other) {
     return [other[0], other[1]]
 }
 
-var path = [
+var path = []
+
+var path1 = [
     [35, 75],
     [55, 55],
     [75, 80],
-    [175, 130],
-    // [215, 50],
-    // [15, 130],
-    // [110, 10],
-    // [200, 100],
-    // [200, 20],
+    [175, 130]
+]
+
+var path2 = [
+    [215, 50],
+    [15, 130],
+    [110, 10],
+    [200, 100],
+    [200, 20]
 ]
 
 var draw = require('./draw-complex')
@@ -44,7 +49,7 @@ var colors = array(50).map(function() {
 })
 
 touch.on('move', function(x, y) {
-    if (vec.distance(touch.position, path[path.length-1]) > 6)
+    if (path.length===0 || vec.distance(touch.position, path[path.length-1]) > 6)
         path.push(touch.position.slice())
 })
 
@@ -57,21 +62,22 @@ function render(ctx, width, height, dt) {
     ctx.save()  
     ctx.miterLimit = stroke.miterLimit = 3
 
-    ctx.lineWidth = 20
+    ctx.lineWidth = 10
     ctx.lineJoin = stroke.joinType = 'miter'
     ctx.lineCap = stroke.capType = 'butt'
     ctx.beginPath()
-    path.forEach(function(p) {
+    path2.forEach(function(p) {
         ctx.lineTo(p[0], p[1])
     })
-    // ctx.stroke()
+    ctx.stroke()
 
     ctx.translate(0, 0)
 
-    stroke.thickness = 10 + Math.sin(time/1000 * 2)*10
-    stroke.clear().path(path)
-    
-    stroke.cells.forEach(function(f, i) {
+    stroke.thickness = 10// + Math.sin(time/1000 * 2)*10
+
+    var mesh = stroke.extrude(path1)
+
+    mesh.cells.forEach(function(f, i) {
         ctx.beginPath()
 
         var v = stroke.positions
@@ -83,7 +89,7 @@ function render(ctx, width, height, dt) {
         ctx.lineTo(v2[0], v2[1])
         ctx.lineTo(v0[0], v0[1])
 
-        ctx.fillStyle = '#1d1d1d'//colorStyle(colors[i%colors.length])
+        ctx.fillStyle = colorStyle(colors[i%colors.length])
         ctx.fill()
 
         // ctx.fillStyle = 'black'
@@ -92,7 +98,7 @@ function render(ctx, width, height, dt) {
         // ctx.fillText(f[2], v2[0], v2[1])
     })
 
-    stroke.positions.forEach(function(p) {
+    mesh.positions.forEach(function(p) {
         ctx.fillStyle = 'red'
         var s = p[2] || 4
         // ctx.fillRect(p[0]-s/2, p[1]-s/2, s, s)

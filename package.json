@@ -1,5 +1,5 @@
 {
-  "name": "extrude-stroke",
+  "name": "extrude-polyline",
   "version": "1.0.0",
   "description": "triangulates a 2D polyline into a stroke",
   "main": "index.js",
@@ -11,6 +11,7 @@
     "url": "https://github.com/mattdesl"
   },
   "dependencies": {
+    "as-number": "^1.0.0",
     "gl-vec2": "^1.0.0"
   },
   "devDependencies": {
@@ -44,10 +45,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/mattdesl/extrude-stroke.git"
+    "url": "git://github.com/mattdesl/extrude-polyline.git"
   },
-  "homepage": "https://github.com/mattdesl/extrude-stroke",
+  "homepage": "https://github.com/mattdesl/extrude-polyline",
   "bugs": {
-    "url": "https://github.com/mattdesl/extrude-stroke/issues"
+    "url": "https://github.com/mattdesl/extrude-polyline/issues"
   }
 }
