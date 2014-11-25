@@ -39,6 +39,10 @@ stroke.mapThickness = function(point, index, points) {
 }.bind(stroke)
 ```
 
+## demo
+
+Git clone, `npm install`, then `npm run test`
+
 ## Usage
 
 [![NPM](https://nodei.co/npm/extrude-polyline.png)](https://nodei.co/npm/extrude-polyline/)

@@ -57,7 +57,7 @@ function render(ctx, width, height, dt) {
         ctx.lineTo(v0[0], v0[1])
 
         var thick = thicknesses[f[0]]
-        var color = colorStyle.hsl(250, thick*100, 75)
+        var color = colorStyle.hsl(200+thick*25, thick*100, 50)
         ctx.strokeStyle = colorStyle(color)
         ctx.stroke()
     })

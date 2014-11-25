@@ -4,7 +4,6 @@
   "description": "triangulates a 2D polyline into a stroke",
   "main": "index.js",
   "license": "MIT",
-  "private": true,
   "author": {
     "name": "Matt DesLauriers",
     "email": "dave.des@gmail.com",
@@ -27,7 +26,7 @@
     "touch-position": "^1.0.3"
   },
   "scripts": {
-    "test": "beefy test/test-segment.js --open"
+    "test": "beefy test/test-draw.js --open"
   },
   "keywords": [
     "triangulate",
