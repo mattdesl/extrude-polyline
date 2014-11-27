@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "as-number": "^1.0.0",
-    "draw-triangles-2d": "^1.0.0",
     "gl-vec2": "^1.0.0",
     "polyline-miter-util": "^1.0.0"
   },
@@ -22,6 +21,7 @@
     "clamp": "^1.0.1",
     "color-convert": "^0.5.2",
     "color-style": "^1.0.0",
+    "draw-triangles-2d": "^1.0.0",
     "randf": "^1.0.0",
     "smoothstep": "^1.0.1",
     "tape": "^3.0.3",
