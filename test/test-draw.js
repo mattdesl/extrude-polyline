@@ -1,12 +1,14 @@
 require('canvas-testbed')(render)
 
-var stroke = require('../')()
+var stroke = require('../')({
+    // miter: 'bevel'
+})
 var vec = require('gl-vec2')
 
 var path = [],
     thicknesses = []
 
-var draw = require('./draw-complex')
+var draw = require('draw-triangles-2d')
 var touch = require('touch-position').emitter()
 var colorStyle = require('color-style')
 
@@ -44,23 +46,10 @@ function render(ctx, width, height, dt) {
 
     var mesh = stroke.build(path)
 
-    mesh.cells.forEach(function(f, i) {
-        ctx.beginPath()
-
-        var v = mesh.positions
-        var v0 = v[f[0]],
-            v1 = v[f[1]],
-            v2 = v[f[2]]
-        ctx.moveTo(v0[0], v0[1])
-        ctx.lineTo(v1[0], v1[1])
-        ctx.lineTo(v2[0], v2[1])
-        ctx.lineTo(v0[0], v0[1])
-
-        var thick = thicknesses[f[0]]
-        var color = colorStyle.hsl(200+thick*25, thick*100, 50)
-        ctx.strokeStyle = colorStyle(color)
-        ctx.stroke()
-    })
+    ctx.beginPath()
+    draw(ctx, mesh.positions, mesh.cells)
+    ctx.strokeStyle = 'hsl(0,0%,45%)'
+    ctx.stroke()
 
     ctx.restore()
 }

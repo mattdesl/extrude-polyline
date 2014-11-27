@@ -8,6 +8,11 @@ var lineB = vec.create()
 var tangent = vec.create()
 var miter = vec.create()
 
+var util = require('polyline-miter-util')
+var computeMiter = util.computeMiter,
+    normal = util.normal,
+    direction = util.direction
+
 function Stroke(opt) {
     if (!(this instanceof Stroke))
         return new Stroke(opt)
@@ -168,19 +173,6 @@ Stroke.prototype._seg = function(complex, index, last, cur, next, halfThick) {
      return count
 }
 
-function computeMiter(tangent, miter, lineA, lineB, halfThick) {
-    //get tangent line
-    vec.add(tangent, lineA, lineB)
-    vec.normalize(tangent, tangent)
-
-    //get miter as a unit vector
-    vec.set(miter, -tangent[1], tangent[0])
-    vec.set(tmp, -lineA[1], lineA[0])
-
-    //get the necessary length of our miter
-    return halfThick / vec.dot(miter, tmp)
-}
-
 function extrusions(positions, point, normal, scale) {
     //next two points to end our segment
     vec.scaleAndAdd(tmp, point, normal, -scale)
@@ -188,19 +180,6 @@ function extrusions(positions, point, normal, scale) {
 
     vec.scaleAndAdd(tmp, point, normal, scale)
     positions.push(vec.clone(tmp))
-}
-
-function normal(out, dir) {
-    //get perpendicular
-    vec.set(out, -dir[1], dir[0])
-    return out
-}
-
-function direction(out, a, b) {
-    //get unit dir of two lines
-    vec.subtract(out, a, b)
-    vec.normalize(out, out)
-    return out
 }
 
 module.exports = Stroke
