@@ -1,6 +1,6 @@
 {
   "name": "extrude-polyline",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "triangulates a 2D polyline into a stroke",
   "main": "index.js",
   "license": "MIT",
