@@ -72,6 +72,7 @@ Some features that could be useful to add at a later point. PRs welcome.
 - optimizations for GC (pooling, etc)
 - handling anti-aliasing
 - degenerate triangles or some other form of supporting disconnected lines
+- unify codebase with [polyline-normals](https://nodei.co/npm/polyline-normals/)
 
 ## License
 
