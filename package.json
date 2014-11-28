@@ -12,7 +12,7 @@
   "dependencies": {
     "as-number": "^1.0.0",
     "gl-vec2": "^1.0.0",
-    "polyline-miter-util": "^1.0.0"
+    "polyline-miter-util": "^1.0.1"
   },
   "devDependencies": {
     "array-range": "^1.0.1",
