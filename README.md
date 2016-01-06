@@ -7,7 +7,7 @@
 Extrudes a 2D polyline with a given line thickness and the desired join/cap types. Tries to maintain visual consistency with HTML5 2D context stroking.
 
 ```js
-var polylne = [ [25, 25], [15, 60] ]
+var polyline = [ [25, 25], [15, 60] ]
 var stroke = require('extrude-polyline')({ 
     thickness: 20, 
     cap: 'square',
