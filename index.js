@@ -13,6 +13,8 @@ var computeMiter = util.computeMiter,
     normal = util.normal,
     direction = util.direction
 
+var MAX_MITER_VALUE = 1e20; // infinity * 0 cause NaN, fix #7
+
 function Stroke(opt) {
     if (!(this instanceof Stroke))
         return new Stroke(opt)
@@ -119,6 +121,8 @@ Stroke.prototype._seg = function(complex, index, last, cur, next, halfThick) {
 
         //stores tangent & miter
         var miterLen = computeMiter(tangent, miter, lineA, lineB, halfThick)
+        // infinity * 0 cause NaN, fix #7
+        miterLen = Math.min(miterLen, MAX_MITER_VALUE);
 
         // normal(tmp, lineA)
         
@@ -138,7 +142,6 @@ Stroke.prototype._seg = function(complex, index, last, cur, next, halfThick) {
             positions.push(vec.clone(tmp))
             vec.scaleAndAdd(tmp, cur, miter, miterLen * flip)
             positions.push(vec.clone(tmp))
-
 
             cells.push(this._lastFlip!==-flip
                     ? [index, index+2, index+3] 
